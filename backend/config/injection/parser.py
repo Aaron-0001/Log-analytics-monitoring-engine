@@ -6,18 +6,41 @@ LOG_PATTERN = re.compile(
     r"(?P<service>\w+)\s"
     r"(?P<message>.*?)(?:\suser_id=(?P<user_id>\d+))?$"
 )
-def parse_log_line(line):
-    #logic to matching log pattern
-    match=LOG_PATTERN.match(line) 
-    if not match: #if match is not found
-        return None
-    return {
-        "timestamp": match.group("timestamp"),
-        "level": match.group("level"),
-        "service": match.group("service"),
-        "message": match.group("message")
-    }
 
+
+# def parse_log_line(line):
+#     #logic to matching log pattern
+#     match=LOG_PATTERN.match(line) 
+#     if not match: #if match is not found
+#         return None
+#     return {
+#         "timestamp": match.group("timestamp"),
+#         "level": match.group("level"),
+#         "service": match.group("service"),
+#         "message": match.group("message")
+#     }
+
+import re
+from datetime import datetime
+
+LOG_PATTERN = re.compile(
+    r'(?P<timestamp>\S+ \S+)\s+'
+    r'(?P<level>\S+)\s+'
+    r'(?P<service>\S+)\s+'
+    r'(?P<message>.*)'
+)
+
+def parse_log_line(line):
+    match = LOG_PATTERN.match(line)
+    if not match:
+        return None
+
+    data = match.groupdict()
+    data["timestamp"] = datetime.strptime(
+        data["timestamp"], "%Y-%m-%d %H:%M:%S"
+    )
+    data["raw"] = line.strip()
+    return data
 
 #Groupdict()
 #Strip()
