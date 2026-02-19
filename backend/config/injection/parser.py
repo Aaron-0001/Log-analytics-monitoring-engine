@@ -1,11 +1,11 @@
 import re
 
-LOG_PATTERN = re.compile(
-    r"(?P<timestamp>[\d\-:\s]+)\s"
-    r"(?P<level>\w+)\s"
-    r"(?P<service>\w+)\s"
-    r"(?P<message>.*?)(?:\suser_id=(?P<user_id>\d+))?$"
-)
+# LOG_PATTERN = re.compile(
+#     r"(?P<timestamp>[\d\-:\s]+)\s"
+#     r"(?P<level>\w+)\s"
+#     r"(?P<service>\w+)\s"
+#     r"(?P<message>.*?)(?:\suser_id=(?P<user_id>\d+))?$"
+# )
 
 
 # def parse_log_line(line):
