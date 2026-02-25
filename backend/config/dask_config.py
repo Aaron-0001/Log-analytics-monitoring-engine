@@ -1,20 +1,23 @@
+#client (): Client is a python methods which is used to make a connection between dask cluster and python code which is mean that local machine
+#Local cluster :It is a cluster used to develop and test or prove distributed computing locally before deploying into main cluster
+#without client 
+#we cannot know number of workers exist in cluster
+#we cannot know what is task and where task is running
+#we cannot know the status of the task
+#we cannot monitor the process of execution
+#with client
+#we can asssign task to the workers
+#we can easy connect python code with dask
+#we can easyly see the status 
 from dask.distributed import Client, LocalCluster
-#client (): client is a python method which is used to make a connection between dask cluster and
-#  python code which is mean as local machine 
-# local cluster : it is a cluster used to develop and test or prove distributed computing locally before 
-# deploying into main cluster
-# without client, 
-# we cannot know no.of workers exist in clusters
-# we cannot know what is the task or where the task is running and cannot know status of dask 
-# task : we cannot monitor the process of execution 
-# with client: we can assign task to workers and can easily connect python code with dask and 
-# can see the status of dask
-
 def create_dask_client():
+    print("Creating Dask cluster...")
+
     cluster = LocalCluster(
-        n_workers=4,  # Number of workers in the cluster
-        threads_per_worker=2,  # Number of threads per worker
-        memory_limit='1GB',  # Memory limit for each worker
-        dashboard_address=":8790"
+        n_workers=4,
+        threads_per_worker=2,
+        memory_limit="1GB"
     )
-    return Client(cluster)
+    client = Client(cluster)   # IMPORTANT: Capital C
+    print("Dask cluster created successfully!")
+    return client

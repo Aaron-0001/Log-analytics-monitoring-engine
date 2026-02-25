@@ -6,6 +6,8 @@ from processing.pipeline import build_pipeline
 from processing.pipeline import build_pipeline
 
 
+
+
 # def main():
 #     # Create a Dask client
 #     client = start_dask()
@@ -26,6 +28,10 @@ from processing.pipeline import build_pipeline
 #     input("Press Enter to stop the cluster...") # give this line in code
 #     # Don't forget to close the client when you're done
 #     client.close()  
+
+from backend.config.dask_config import create_dask_client
+from backend.injection.parser import parse_log_line
+from backend.injection.loader import load_logs
 
 def main():
     print("Starting Log Processing...")

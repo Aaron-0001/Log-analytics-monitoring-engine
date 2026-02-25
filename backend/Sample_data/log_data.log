@@ -1,0 +1,22 @@
+2024-10-12 09:30:01 INFO    Service started version=1.2.3
+2024-10-12 09:30:03 INFO    Health check passed
+2024-10-12 09:30:07 INFO    User login success user_id=458 ip=192.168.1.12
+2024-10-12 09:30:09 DEBUG   Auth token generated token_id=ab23f9
+2024-10-12 09:30:12 INFO    API request GET /api/logs status=200 time=85ms
+2024-10-12 09:30:15 WARN    CPU usage high usage=78%
+2024-10-12 09:30:18 INFO    File upload started filename=logs.csv
+2024-10-12 09:30:22 INFO    File upload completed size=2.3MB
+2024-10-12 09:30:25 DEBUG   Cache hit key=user_458
+2024-10-12 09:30:29 INFO    API request POST /api/analyze status=202
+2024-10-12 09:30:33 INFO    Analysis job queued job_id=7891
+2024-10-12 09:30:37 WARN    Disk usage warning usage=82%
+2024-10-12 09:30:41 DEBUG   Worker picked job job_id=7891
+2024-10-12 09:30:46 INFO    Processing logs batch=1 records=500
+2024-10-12 09:30:52 INFO    Processing logs batch=2 records=500
+2024-10-12 09:30:58 ERROR   Database timeout retry=1
+2024-10-12 09:31:02 INFO    Database reconnected
+2024-10-12 09:31:07 INFO    Analysis completed job_id=7891
+2024-10-12 09:31:11 INFO    Report generated report_id=R1023
+2024-10-12 09:31:14 INFO    User downloaded report report_id=R1023
+2024-10-12 09:31:18 INFO    User logout user_id=458
+2024-10-12 09:31:20 INFO    System idle
