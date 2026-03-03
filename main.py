@@ -1,12 +1,3 @@
-from datetime import time
-
-from config.dask_config import start_dask
-from ingestion.loader import load_logs
-from processing.pipeline import build_pipeline
-from processing.pipeline import build_pipeline
-
-
-
 
 # def main():
 #     # Create a Dask client
@@ -33,24 +24,28 @@ from backend.config.dask_config import create_dask_client
 from backend.injection.parser import parse_log_line
 from backend.injection.loader import load_logs
 
+
 def main():
     print("Starting Log Processing...")
-    client = start_dask()
+
+    # Start Dask
+    client = create_dask_client()
     print("Dask Started Successfully")
 
-    df = load_logs("data/sample_log.log")
+    # Load logs
+    df = load_logs("backend/sample_data/log_data.log")
     print("Logs Loaded Successfully")
 
     print("\nFirst 5 Parsed Logs:")
     print(df.head())
 
-    print("\nLog Count by Level:")
+    print("\nTotal Log Count:")
     result = df.count().compute()
     print(result)
 
     client.close()
     print("\nProcessing Finished Successfully!")
-    
-    
+
+
 if __name__ == "__main__":
     main()
