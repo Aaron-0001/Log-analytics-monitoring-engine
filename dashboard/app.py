@@ -14,8 +14,8 @@ root_path = os.path.abspath(os.path.join(current_script_path, ".."))
 if root_path not in sys.path:
     sys.path.insert(0, root_path)
 
-from backend.pipeline.processing import build_pipeline
-from backend.anamoly.detection import detect_anomaly
+from backend.pipeline.processing import process_pipeline as build_pipeline
+from backend.anamoly.detection import detect_anamoly
 
 # ---------------------------------------------------
 # PAGE CONFIG
@@ -46,7 +46,7 @@ try:
     log_df_dask = build_pipeline(log_file_path)
     log_data = log_df_dask.compute()
 
-    anomaly_result = detect_anomaly(log_df_dask)
+    anomaly_result = detect_anamoly(log_df_dask)
     anomaly_df = anomaly_result.compute() if hasattr(anomaly_result, "compute") else anomaly_result
 
 # ---------------------------------------------------
@@ -109,11 +109,13 @@ try:
 
     if not error_df.empty:
         error_df["timestamp"] = pd.to_datetime(error_df["timestamp"])
+        time_range = error_df["timestamp"].max() - error_df["timestamp"].min()
+        resample_rule = "1min" if time_range.total_seconds() > 120 else "5s"
 
         error_trend = (
             error_df
             .set_index("timestamp")
-            .resample("1min")
+            .resample(resample_rule)
             .size()
             .reset_index(name="error_count")
         )
@@ -122,7 +124,8 @@ try:
             error_trend,
             x="timestamp",
             y="error_count",
-            title="Error Frequency"
+            title="Error Frequency",
+            markers=True #show dots on each data point
         )
 
         st.plotly_chart(line_chart, use_container_width=True)
