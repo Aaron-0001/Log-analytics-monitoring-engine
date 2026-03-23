@@ -1,59 +1,55 @@
-from datetime import time
 import time
-# import the actual client creator and correct loader path
 from backend.config.dask_config import create_dask_client
-from backend.injection.loader import load_logs
-# from processing.pipeline import build_pipeline
-from backend.pipeline.processing import process_pipeline
-
-# def main():
-#     # Create a Dask client
-#     client = start_dask()
-#     print(client)
-#     print(f"Dashboard: {client.dashboard_link}")
-    
-#     # df = load_logs("backend/sample_data/log_data.log")
-    
-#     start = time.time()
-#     # df = build_pipeline("data/sample_log.log")
-#     df = load_logs("data/sample_log.log")
-#     total_logs = df.count().compute()
-#     end = time.time()
-    
-#     # Now you can use the client to submit tasks to the Dask cluster
-#     # For example, you can use client.submit() to run a function on the cluster
-#     # result = client.submit(your_function, your_arguments)
-#     input("Press Enter to stop the cluster...") # give this line in code
-#     # Don't forget to close the client when you're done
-#     client.close()  
+from backend.pipeline.processing import process_pipeline as build_pipeline
+from backend.anamoly.detection import detect_anamoly
+from backend.config.email_config import send_anomaly_email
 
 def main():
-    print("Starting Log Processing...")
     client = create_dask_client()
-    print("Dask Started Successfully")
-    print(f"dashboard:{client.dashboard_link}")
-    start= time.time()
-    print("start time", start)
-
-    # use the existing sample log under backend/sample_data
-    df = process_pipeline("backend/sample_data/log_data.log")
-    print("Logs Loaded Successfully")
-    print(df.compute())
-
-
-   # print("\nFirst 5 Parsed Logs:")
-    #print(df.head())
-
-    print("\nLog Count by Level:")
-    result = df.count().compute()
-    print(result)
-
+    print(client)
+    print(f"Dashboard link: {client.dashboard_link}")
+    print("\n" + "=" * 50)
+    start = time.time()
+    # Build log processing pipeline
+    log_df = build_pipeline(r"D:\Project\Log-analytics-monitoring-engine-1\backend\Sample_data\log_data.log")
+    print("Parsed Log Data (Table Format):")
+    print(log_df.compute())
+    # Correct way to count rows
+    total_logs = log_df.shape[0].compute()
     end = time.time()
-    print("end time", end)
-    print(input("Press Enter to stop the cluster..."))
-    client.close()
-    print("\nProcessing Finished Successfully!")
-    
-    
+    print("Total logs parsed:", total_logs)
+    print("Time taken:", round(end - start, 2), "seconds")
+    print("\nRunning anomaly detection...")
+    # Detect anomalies
+    anomalies = detect_anamoly(log_df)
+    # If still a Dask dataframe convert to pandas
+    if hasattr(anomalies, "compute"):
+        anomalies = anomalies.compute()
+    if anomalies.empty:
+        print("No anomalies detected")
+    else:
+        print(f"🚨 {len(anomalies)} anomalies detected!")
+        
+        for minute, row in anomalies.iterrows():
+            anomaly_data = {
+                "timestamp": minute,
+    "error_count": row.get("error_count", 0),
+    "z_score": row.get("z_score", 0)
+            }
+            send_anomaly_email(
+sender_email="",
+password="",
+ to_email="",
+anomaly=anomaly_data
+    )
+
+            print(
+                f"Alert | Time: {minute} | "
+                f"Errors: {row.get('error_count')}"
+            )
+
+    input("\nPress Enter to exit...")
+
+
 if __name__ == "__main__":
     main()
