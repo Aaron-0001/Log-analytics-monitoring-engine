@@ -82,6 +82,7 @@ try:
         st.subheader("ERROR Logs Over Time")
         if not error_df.empty:
             fig_error = px.histogram(error_df, x="timestamp")
+            fig_error.update_layout(bargap=0.1) #reduce gap between bars
             st.plotly_chart(fig_error, use_container_width=True)
         else:
             st.info("No ERROR logs")
