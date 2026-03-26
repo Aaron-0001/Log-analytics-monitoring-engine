@@ -81,7 +81,7 @@ try:
     with col1:
         st.subheader("ERROR Logs Over Time")
         if not error_df.empty:
-            fig_error = px.histogram(error_df, x="timestamp")
+            fig_error = px.histogram(error_df, x="timestamp", color_discrete_sequence=["red"])
             fig_error.update_layout(bargap=0.1) #reduce gap between bars
             st.plotly_chart(fig_error, use_container_width=True)
         else:
@@ -90,7 +90,7 @@ try:
     with col2:
         st.subheader("INFO Logs Over Time")
         if not info_df.empty:
-            fig_info = px.histogram(info_df, x="timestamp")
+            fig_info = px.line(info_df, x="timestamp", color_discrete_sequence=["blue"],markers=True)
             st.plotly_chart(fig_info, use_container_width=True)
         else:
             st.info("No INFO logs")
@@ -98,7 +98,8 @@ try:
     with col3:
         st.subheader("WARN Logs Over Time")
         if not warn_df.empty:
-            fig_warn = px.histogram(warn_df, x="timestamp")
+            fig_warn = px.histogram(warn_df, x="timestamp",color_discrete_sequence=["orange"])
+            fig_warn.update_layout(bargap=0.1) #reduce gap between bars
             st.plotly_chart(fig_warn, use_container_width=True)
         else:
             st.info("No WARN logs")
